@@ -1,24 +1,29 @@
 import { TypeVideogameShort } from "../Type/Type"
 
-
 type Prop = {
     game: TypeVideogameShort
 }
 
 function GameCard({ game }: Prop) {
     return (
-        <>
-            <div className="card">
-                <div className="card-header">
-                    {game.title}
+        <div className="col">
+            <div className="card h-100 shadow-sm">
+                <div className="card-header bg-primary text-white">
+                    <h5 className="mb-0">{game.title}</h5>
                 </div>
                 <div className="card-body">
-                    <h5 className="card-title">{game.category}</h5>
-                    
-                    <a href="#" className="btn btn-primary">vai al dettaglio</a>
+                    <h6 className="card-subtitle mb-3 text-muted">
+                        <span className="badge bg-secondary">{game.category}</span>
+                    </h6>
+                    <p className="card-text">
+                        <small className="text-muted">
+                            Aggiornato: {new Date(game.updatedAt).toLocaleDateString()}
+                        </small>
+                    </p>
+                    <a href={`/game/${game.id}`} className="btn btn-outline-primary">Vai al dettaglio</a>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

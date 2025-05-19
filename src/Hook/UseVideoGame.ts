@@ -4,8 +4,11 @@ import { ArrayVideoGamesShort, isArrayVideogames } from "../Type/Type";
 function UseVideoGames() {
     const backUrl = import.meta.env.VITE_BACKEND_URL;
     const [videogame, setVideogame] = useState<ArrayVideoGamesShort | null>(null);
+    const [allVideogames, setAllVideogames] = useState<ArrayVideoGamesShort | null>(null);
     const [inputSearch, setInputSearch] = useState<string>("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [categories, setCategories] = useState<string[]>([]);
 
     //funzione che prende tutti i dati in formato semplice solo con le 5 chiavi essenziali
     async function fetchVideogames(searchTerm: string = ""): Promise<void> {
@@ -19,6 +22,11 @@ function UseVideoGames() {
             if (!isArrayVideogames(data)) throw new Error("Tipo dati non conforme");
 
             setVideogame(data);
+            setAllVideogames(data);
+            
+            // Estrai le categorie uniche
+            const uniqueCategories = Array.from(new Set(data.map(game => game.category)));
+            setCategories(uniqueCategories);
         } catch (err) {
             if (err instanceof Error) {
                 console.error("Errore:", err);
@@ -30,18 +38,28 @@ function UseVideoGames() {
         }
     }
 
-    // Effetto che gestisce il debounce per l'input di ricerca
+    // Applica i filtri (titolo e categoria)
     useEffect(() => {
-        // Timer per il debounce
-        const debounceTimeout = setTimeout(() => {
-            fetchVideogames(inputSearch);
-        }, 500); // 500ms di debounce
+        if (!allVideogames) return;
         
-        // Cleanup function per cancellare il timer quando inputSearch cambia nuovamente
-        return () => {
-            clearTimeout(debounceTimeout);
-        };
-    }, [inputSearch]);
+        let filteredGames = [...allVideogames];
+        
+        // Filtra per titolo
+        if (inputSearch.trim() !== "") {
+            filteredGames = filteredGames.filter(game => 
+                game.title.toLowerCase().includes(inputSearch.toLowerCase())
+            );
+        }
+        
+        // Filtra per categoria
+        if (selectedCategory !== "") {
+            filteredGames = filteredGames.filter(game => 
+                game.category === selectedCategory
+            );
+        }
+        
+        setVideogame(filteredGames);
+    }, [inputSearch, selectedCategory, allVideogames]);
 
     // Caricamento iniziale
     useEffect(() => {
@@ -51,7 +69,10 @@ function UseVideoGames() {
     return { 
         videogame, 
         inputSearch, 
-        setInputSearch, 
+        setInputSearch,
+        selectedCategory,
+        setSelectedCategory,
+        categories,
         isSearching 
     };
 }

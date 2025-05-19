@@ -1,4 +1,5 @@
 import { TypeVideogameShort } from "../Type/Type"
+import { Link } from "react-router-dom"
 
 type Prop = {
     game: TypeVideogameShort
@@ -20,7 +21,7 @@ function GameCard({ game }: Prop) {
                             Aggiornato: {new Date(game.updatedAt).toLocaleDateString()}
                         </small>
                     </p>
-                    <a href={`/game/${game.id}`} className="btn btn-outline-primary">Vai al dettaglio</a>
+                    <Link to={`/game/${game.id}`} className="btn btn-outline-primary">Vai al dettaglio</Link>
                 </div>
             </div>
         </div>

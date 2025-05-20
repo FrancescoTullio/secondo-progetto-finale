@@ -87,7 +87,7 @@ export default function GameDetailPage() {
                                         <span className="fw-bold">{videogameDetail.multiplayer ? 'Sì' : 'No'}</span>
                                     </li>
                                     <li className="list-group-item d-flex justify-content-between">
-                                        <span>Voto:</span>
+                                        <span>Voto: {videogameDetail.vote}</span>
                                         <div>
                                             {Array.from({ length: Math.floor(videogameDetail.vote) }).map((_, i) => (
                                                 <i key={i} className="bi bi-star-fill text-warning"></i>

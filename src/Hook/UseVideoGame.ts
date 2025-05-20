@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { ArrayVideoGamesShort, isArrayVideogames } from "../Type/Type";
 
+// Tipo per le opzioni di ordinamento
+type SortOption = "title_asc" | "title_desc" | "category_asc" | "category_desc" | "";
+
 function UseVideoGames() {
     const backUrl = import.meta.env.VITE_BACKEND_URL;
     const [videogame, setVideogame] = useState<ArrayVideoGamesShort | null>(null);
     const [allVideogames, setAllVideogames] = useState<ArrayVideoGamesShort | null>(null);
     const [inputSearch, setInputSearch] = useState<string>("");
     const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [sortOption, setSortOption] = useState<SortOption>("");
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const [categories, setCategories] = useState<string[]>([]);
 
@@ -38,7 +42,25 @@ function UseVideoGames() {
         }
     }
 
-    // Applica i filtri (titolo e categoria)
+    // Funzione per ordinare i giochi in base all'opzione selezionata
+    function sortGames(games: ArrayVideoGamesShort, option: SortOption): ArrayVideoGamesShort {
+        const gamesCopy = [...games];
+        
+        switch (option) {
+            case "title_asc":
+                return gamesCopy.sort((a, b) => a.title.localeCompare(b.title));
+            case "title_desc":
+                return gamesCopy.sort((a, b) => b.title.localeCompare(a.title));
+            case "category_asc":
+                return gamesCopy.sort((a, b) => a.category.localeCompare(b.category));
+            case "category_desc":
+                return gamesCopy.sort((a, b) => b.category.localeCompare(a.category));
+            default:
+                return gamesCopy;
+        }
+    }
+
+    // Applica i filtri (titolo e categoria) e l'ordinamento
     useEffect(() => {
         if (!allVideogames) return;
         
@@ -58,8 +80,13 @@ function UseVideoGames() {
             );
         }
         
+        // Applica l'ordinamento se selezionato
+        if (sortOption !== "") {
+            filteredGames = sortGames(filteredGames, sortOption);
+        }
+        
         setVideogame(filteredGames);
-    }, [inputSearch, selectedCategory, allVideogames]);
+    }, [inputSearch, selectedCategory, sortOption, allVideogames]);
 
     // Caricamento iniziale
     useEffect(() => {
@@ -72,6 +99,8 @@ function UseVideoGames() {
         setInputSearch,
         selectedCategory,
         setSelectedCategory,
+        sortOption,
+        setSortOption,
         categories,
         isSearching 
     };

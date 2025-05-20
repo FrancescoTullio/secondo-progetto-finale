@@ -1,11 +1,16 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import UseVideoGameDetail from "../Hook/UseVideoGameDetail";
+import { useFavorites } from "../Contex/FavoritesContext";
 
 export default function GameDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { videogameDetail, isLoading, error, fetchVideoGameDetail } = UseVideoGameDetail();
+    const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+    
+    // Verifica se il gioco è nei preferiti
+    const isGameFavorite = id ? isFavorite(parseInt(id)) : false;
 
     useEffect(() => {
         if (id) {
@@ -15,6 +20,25 @@ export default function GameDetailPage() {
 
     const handleGoBack = () => {
         navigate(-1); // Torna alla pagina precedente mantenendo lo stato
+    };
+
+    const handleFavoriteClick = () => {
+        if (!videogameDetail) return;
+        
+        // Crea un oggetto TypeVideogameShort dal TypeVideogameLong
+        const gameShort = {
+            id: videogameDetail.id,
+            title: videogameDetail.title,
+            category: videogameDetail.category,
+            createdAt: videogameDetail.createdAt,
+            updatedAt: videogameDetail.updatedAt
+        };
+        
+        if (isGameFavorite) {
+            removeFavorite(videogameDetail.id);
+        } else {
+            addFavorite(gameShort);
+        }
     };
 
     if (isLoading) {
@@ -46,12 +70,22 @@ export default function GameDetailPage() {
 
     return (
         <div className="container py-4">
-            <button 
-                className="btn btn-outline-primary mb-4" 
-                onClick={handleGoBack}
-            >
-                <i className="bi bi-arrow-left"></i> Torna indietro
-            </button>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <button 
+                    className="btn btn-outline-primary" 
+                    onClick={handleGoBack}
+                >
+                    <i className="bi bi-arrow-left"></i> Torna indietro
+                </button>
+                
+                <button 
+                    className={`btn ${isGameFavorite ? 'btn-warning' : 'btn-outline-warning'}`}
+                    onClick={handleFavoriteClick}
+                >
+                    <i className={`bi ${isGameFavorite ? 'bi-star-fill' : 'bi-star'} me-2`}></i>
+                    {isGameFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
+                </button>
+            </div>
 
             <div className="card border-0 shadow">
                 <div className="row g-0">

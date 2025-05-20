@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { TypeVideogameLong, isVideogameLong } from "../Type/Type";
+// UseVideoGameDetail.ts
+import { useState, useCallback } from "react"; // <-- Importa useCallback
+import { TypeVideogameLong, isDetailVideogams } from "../Type/Type";
 
-function UseVideoGameDetail() {
+function useVideoGameDetail() {
     const backUrl = import.meta.env.VITE_BACKEND_URL;
     const [videogameDetail, setVideogameDetail] = useState<TypeVideogameLong | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function fetchVideoGameDetail(id: number): Promise<void> {
+    // Avvolgi fetchVideoGameDetail in useCallback
+    const fetchVideoGameDetail = useCallback(async (id: number): Promise<TypeVideogameLong | null> => {
         setIsLoading(true);
         setError(null);
         
@@ -19,21 +21,25 @@ function UseVideoGameDetail() {
 
             const data = await res.json();
             
-            if (!data.success || !isVideogameLong(data.videogame)) {
+            if (!isDetailVideogams(data)) {
                 throw new Error("Formato dati non valido");
             }
 
             setVideogameDetail(data.videogame);
+            return data.videogame;
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
                 setError("Errore sconosciuto durante il recupero dei dettagli");
             }
+            return null;
         } finally {
             setIsLoading(false);
         }
-    }
+    }, [backUrl]); // Array delle dipendenze di useCallback:
+                  // `backUrl` è l'unica cosa da cui dipende questa funzione esternamente.
+                  // Non mettere `id` qui, perché `id` è un argomento della funzione.
 
     return {
         videogameDetail,
@@ -43,4 +49,4 @@ function UseVideoGameDetail() {
     };
 }
 
-export default UseVideoGameDetail;
+export default useVideoGameDetail;

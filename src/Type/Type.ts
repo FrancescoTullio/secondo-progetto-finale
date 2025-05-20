@@ -73,15 +73,6 @@ function isVideogameLong(data: unknown): data is TypeVideogameLong {
 type ArrayVideoGamesShort = TypeVideogameShort[]
 
 
-
-
-
-type DetailVideogames = {
-    success: boolean;
-    videogame: TypeVideogameLong
-}
-
-
 function isArrayVideogames(data: unknown): data is ArrayVideoGamesShort {
     return (
         data !== null &&
@@ -91,6 +82,26 @@ function isArrayVideogames(data: unknown): data is ArrayVideoGamesShort {
     )
 }
 
+
+type DetailVideogames = {
+    success: boolean;
+    videogame: TypeVideogameLong
+}
+
+function isDetailVideogams (data: unknown): data is DetailVideogames{
+    return(
+        data !== null &&
+        typeof data === "object" &&
+        "success" in data &&
+        typeof data.success ==="boolean" &&
+        "videogame" in data &&
+        isVideogameLong(data.videogame)
+    )
+}
+
+
+
+
 export type { TypeVideogameShort, TypeVideogameLong, ArrayVideoGamesShort, DetailVideogames }
 
-export { isVideogameShort, isVideogameLong, isArrayVideogames }
+export { isVideogameShort, isVideogameLong, isArrayVideogames, isDetailVideogams }

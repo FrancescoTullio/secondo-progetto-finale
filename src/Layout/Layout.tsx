@@ -2,21 +2,26 @@ import { Outlet } from "react-router-dom";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import FavoritesBar from "../Components/FavoritesBar";
+import CompareView from "../Components/CompareView";
 import { FavoritesProvider } from "../Contex/FavoritesContext";
+import { CompareProvider } from "../Contex/CompareContext";
 
 export default function Layout() {
     return (
         <FavoritesProvider>
-            <div className="d-flex flex-column vh-100">
-                <Header />
-                <main className="flex-grow-1">
-                    <div className="container py-4">
-                        <Outlet />
-                    </div>
-                </main>
-                <FavoritesBar />
-                <Footer />
-            </div>
+            <CompareProvider>
+                <div className="d-flex flex-column min-vh-100">
+                    <Header />
+                    <main className="flex-grow-1">
+                        <div className="container py-4">
+                            <CompareView />
+                            <Outlet />
+                        </div>
+                    </main>
+                    <FavoritesBar />
+                    <Footer />
+                </div>
+            </CompareProvider>
         </FavoritesProvider>
     );
 }

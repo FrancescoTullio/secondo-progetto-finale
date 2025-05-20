@@ -1,31 +1,36 @@
+// GameDetailPage.tsx (Nessuna modifica necessaria qui dopo aver sistemato il custom hook)
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import UseVideoGameDetail from "../Hook/UseVideoGameDetail";
+import useVideoGameDetail from "../Hook/UseVideoGameDetail"; // Importa il custom hook
 import { useFavorites } from "../Contex/FavoritesContext";
+import CompareButton from "../Components/CompareButton";
 
 export default function GameDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { videogameDetail, isLoading, error, fetchVideoGameDetail } = UseVideoGameDetail();
+    // Qui destrutturi fetchVideoGameDetail dal custom hook
+    const { videogameDetail, isLoading, error, fetchVideoGameDetail } = useVideoGameDetail();
     const { addFavorite, removeFavorite, isFavorite } = useFavorites();
     
-    // Verifica se il gioco è nei preferiti
     const isGameFavorite = id ? isFavorite(parseInt(id)) : false;
 
     useEffect(() => {
         if (id) {
+            // Qui fetchVideoGameDetail è ora una funzione memoizzata
+            // quindi React sa che non è cambiata ad ogni render
             fetchVideoGameDetail(parseInt(id));
         }
-    }, [id]);
+    }, [id, fetchVideoGameDetail]); // <-- Aggiungi `WorkspaceVideoGameDetail` alle dipendenze qui!
+                                   // Sebbene `useCallback` la stabilizzi, è buona pratica includerla.
+                                   // React ti avvertirebbe comunque se la ometti.
 
     const handleGoBack = () => {
-        navigate(-1); // Torna alla pagina precedente mantenendo lo stato
+        navigate(-1);
     };
 
     const handleFavoriteClick = () => {
         if (!videogameDetail) return;
         
-        // Crea un oggetto TypeVideogameShort dal TypeVideogameLong
         const gameShort = {
             id: videogameDetail.id,
             title: videogameDetail.title,
@@ -78,13 +83,17 @@ export default function GameDetailPage() {
                     <i className="bi bi-arrow-left"></i> Torna indietro
                 </button>
                 
-                <button 
-                    className={`btn ${isGameFavorite ? 'btn-warning' : 'btn-outline-warning'}`}
-                    onClick={handleFavoriteClick}
-                >
-                    <i className={`bi ${isGameFavorite ? 'bi-star-fill' : 'bi-star'} me-2`}></i>
-                    {isGameFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
-                </button>
+                <div className="d-flex gap-2">
+                    {videogameDetail && <CompareButton game={videogameDetail} variant="detail" />}
+                    
+                    <button 
+                        className={`btn ${isGameFavorite ? 'btn-warning' : 'btn-outline-warning'}`}
+                        onClick={handleFavoriteClick}
+                    >
+                        <i className={`bi ${isGameFavorite ? 'bi-star-fill' : 'bi-star'} me-2`}></i>
+                        {isGameFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
+                    </button>
+                </div>
             </div>
 
             <div className="card border-0 shadow">

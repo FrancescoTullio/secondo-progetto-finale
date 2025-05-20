@@ -6,7 +6,7 @@ export default function HomePage() {
         inputSearch, 
         setInputSearch, 
         videogame, 
-        categories,
+        categories = [], // Fornisce un valore predefinito vuoto
         selectedCategory,
         setSelectedCategory,
         sortOption,
@@ -36,7 +36,7 @@ export default function HomePage() {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
                         <option value="">Tutte le categorie</option>
-                        {categories.map((category, index) => (
+                        {categories && categories.map((category, index) => (
                             <option key={index} value={category}>
                                 {category}
                             </option>

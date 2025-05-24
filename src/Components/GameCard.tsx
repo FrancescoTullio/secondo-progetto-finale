@@ -1,12 +1,14 @@
 import { GameCardProps } from "../Type/Type"
 import { Link } from "react-router-dom"
 import { useFavorites } from "../Contex/FavoritesContext"
+import { useCompare } from "../Contex/CompareContext"
 import { useState, memo } from "react"
 import UseVideoGameDetail from "../Hook/UseVideoGameDetail"
 import CompareButton from "./CompareButton"
 
 function GameCard({ game }: GameCardProps) {
     const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+    const { addToCompare } = useCompare();
     const isGameFavorite = isFavorite(game.id);
     const [fullGameData, setFullGameData] = useState<any>(null);
     const [isLoadingDetail, setIsLoadingDetail] = useState(false);
@@ -20,14 +22,16 @@ function GameCard({ game }: GameCardProps) {
         }
     };
 
-    // Carica i dati completi solo quando necessario per il confronto
-    const loadFullGameDataIfNeeded = async () => {
+    // Carica i dati completi e aggiunge automaticamente al confronto
+    const loadAndAddToCompare = async () => {
         if (!fullGameData && !isLoadingDetail) {
             setIsLoadingDetail(true);
             try {
                 const gameDetail = await fetchVideoGameDetail(game.id);
                 if (gameDetail) {
                     setFullGameData(gameDetail);
+                    // Aggiungi automaticamente al confronto dopo aver caricato i dati
+                    addToCompare(gameDetail);
                 }
             } catch (error) {
                 console.error("Errore nel caricamento dettagli gioco:", error);
@@ -47,10 +51,10 @@ function GameCard({ game }: GameCardProps) {
                             <CompareButton game={fullGameData} />
                         ) : (
                             <button 
-                                onClick={loadFullGameDataIfNeeded}
+                                onClick={loadAndAddToCompare}
                                 className="btn btn-sm btn-outline-info"
                                 disabled={isLoadingDetail}
-                                title="Carica per confrontare"
+                                title="Aggiungi al confronto"
                             >
                                 {isLoadingDetail ? '⏳' : '📊'}
                             </button>

@@ -1,14 +1,5 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
-import { TypeVideogameLong } from '../Type/Type';
-
-interface CompareContextType {
-  compareList: (TypeVideogameLong | null)[];
-  addToCompare: (game: TypeVideogameLong) => void;
-  removeFromCompare: (id: number) => void;
-  isInCompare: (id: number) => boolean;
-  clearCompare: () => void;
-  canAddMore: () => boolean;
-}
+import { TypeVideogameLong, CompareContextType } from '../Type/Type';
 
 const CompareContext = createContext<CompareContextType | undefined>(undefined);
 

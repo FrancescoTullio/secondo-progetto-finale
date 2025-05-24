@@ -11,14 +11,14 @@ export default function Layout() {
         <FavoritesProvider>
             <CompareProvider>
                 <div className="d-flex flex-column min-vh-100">
-                    <Header />
+                    <Header />                    
+                    <FavoritesBar />
                     <main className="flex-grow-1">
                         <div className="container py-4">
                             <CompareView />
                             <Outlet />
                         </div>
                     </main>
-                    <FavoritesBar />
                     <Footer />
                 </div>
             </CompareProvider>

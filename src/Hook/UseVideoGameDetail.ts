@@ -1,8 +1,7 @@
-// UseVideoGameDetail.ts
-import { useState, useCallback } from "react"; // <-- Importa useCallback
-import { TypeVideogameLong, isDetailVideogams } from "../Type/Type";
+import { useState, useCallback } from "react";
+import { TypeVideogameLong, isDetailVideogams, UseVideoGameDetailReturn } from "../Type/Type";
 
-function useVideoGameDetail() {
+function useVideoGameDetail(): UseVideoGameDetailReturn {
     const backUrl = import.meta.env.VITE_BACKEND_URL;
     const [videogameDetail, setVideogameDetail] = useState<TypeVideogameLong | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -37,9 +36,7 @@ function useVideoGameDetail() {
         } finally {
             setIsLoading(false);
         }
-    }, [backUrl]); // Array delle dipendenze di useCallback:
-                  // `backUrl` è l'unica cosa da cui dipende questa funzione esternamente.
-                  // Non mettere `id` qui, perché `id` è un argomento della funzione.
+    }, [backUrl]);
 
     return {
         videogameDetail,

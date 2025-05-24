@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { useCompare } from '../Contex/CompareContext';
-import { TypeVideogameLong } from '../Type/Type';
-
-interface CompareButtonProps {
-  game: TypeVideogameLong;
-  variant?: 'card' | 'detail';
-}
+import { CompareButtonProps } from '../Type/Type';
 
 export default function CompareButton({ game, variant = 'card' }: CompareButtonProps) {
   const { addToCompare, removeFromCompare, isInCompare, canAddMore } = useCompare();
@@ -34,7 +29,7 @@ export default function CompareButton({ game, variant = 'card' }: CompareButtonP
           onClick={handleClick}
           disabled={!canAdd && !inCompare}
         >
-          <i className={`bi bi-bar-chart-fill me-2`}></i>
+          📊
           {inCompare ? 'Rimuovi dal confronto' : 'Aggiungi al confronto'}
         </button>
         
@@ -55,7 +50,7 @@ export default function CompareButton({ game, variant = 'card' }: CompareButtonP
         disabled={!canAdd && !inCompare}
         title={inCompare ? "Rimuovi dal confronto" : "Aggiungi al confronto"}
       >
-        <i className="bi bi-bar-chart-fill"></i>
+        📊
       </button>
       
       {showTooltip && (

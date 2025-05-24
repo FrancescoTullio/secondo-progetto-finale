@@ -1,12 +1,5 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { TypeVideogameShort } from '../Type/Type';
-
-interface FavoritesContextType {
-  favorites: TypeVideogameShort[];
-  addFavorite: (game: TypeVideogameShort) => void;
-  removeFavorite: (id: number) => void;
-  isFavorite: (id: number) => boolean;
-}
+import { TypeVideogameShort, FavoritesContextType } from '../Type/Type';
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 

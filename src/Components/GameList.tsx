@@ -1,11 +1,7 @@
 import GameCard from "./GameCard";
-import { TypeVideogameShort } from "../Type/Type";
+import { GameListProps } from "../Type/Type";
 
-type Props = {
-  videogames: TypeVideogameShort[] | null;
-};
-
-function GameList({ videogames }: Props) {
+function GameList({ videogames }: GameListProps) {
   if (!videogames) {
     return (
       <div className="alert alert-info">

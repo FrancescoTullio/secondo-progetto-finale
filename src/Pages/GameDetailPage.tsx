@@ -1,14 +1,13 @@
-// GameDetailPage.tsx (Nessuna modifica necessaria qui dopo aver sistemato il custom hook)
+// GameDetailPage.tsx - Icone migliorate per una UX più intuitiva
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import useVideoGameDetail from "../Hook/UseVideoGameDetail"; // Importa il custom hook
+import useVideoGameDetail from "../Hook/UseVideoGameDetail";
 import { useFavorites } from "../Contex/FavoritesContext";
 import CompareButton from "../Components/CompareButton";
 
 export default function GameDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    // Qui destrutturi fetchVideoGameDetail dal custom hook
     const { videogameDetail, isLoading, error, fetchVideoGameDetail } = useVideoGameDetail();
     const { addFavorite, removeFavorite, isFavorite } = useFavorites();
     
@@ -16,13 +15,9 @@ export default function GameDetailPage() {
 
     useEffect(() => {
         if (id) {
-            // Qui fetchVideoGameDetail è ora una funzione memoizzata
-            // quindi React sa che non è cambiata ad ogni render
             fetchVideoGameDetail(parseInt(id));
         }
-    }, [id, fetchVideoGameDetail]); // <-- Aggiungi `WorkspaceVideoGameDetail` alle dipendenze qui!
-                                   // Sebbene `useCallback` la stabilizzi, è buona pratica includerla.
-                                   // React ti avvertirebbe comunque se la ometti.
+    }, [id, fetchVideoGameDetail]);
 
     const handleGoBack = () => {
         navigate(-1);
@@ -59,10 +54,14 @@ export default function GameDetailPage() {
     if (error) {
         return (
             <div className="alert alert-danger my-4" role="alert">
-                <h4 className="alert-heading">Errore!</h4>
+                <h4 className="alert-heading">
+                    <i className="bi bi-exclamation-triangle me-2"></i>
+                    Errore!
+                </h4>
                 <p>{error}</p>
                 <hr />
                 <button className="btn btn-outline-danger" onClick={handleGoBack}>
+                    <i className="bi bi-house-door me-2"></i>
                     Torna alla home
                 </button>
             </div>
@@ -80,7 +79,8 @@ export default function GameDetailPage() {
                     className="btn btn-outline-primary" 
                     onClick={handleGoBack}
                 >
-                    <i className="bi bi-arrow-left"></i> Torna indietro
+                    <i className="bi bi-arrow-left me-2"></i>
+                    Torna indietro
                 </button>
                 
                 <div className="d-flex gap-2">
@@ -90,7 +90,7 @@ export default function GameDetailPage() {
                         className={`btn ${isGameFavorite ? 'btn-warning' : 'btn-outline-warning'}`}
                         onClick={handleFavoriteClick}
                     >
-                        <i className={`bi ${isGameFavorite ? 'bi-star-fill' : 'bi-star'} me-2`}></i>
+                        <i className={`bi ${isGameFavorite ? 'bi-heart-fill' : 'bi-heart'} me-2`}></i>
                         {isGameFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
                     </button>
                 </div>
@@ -107,30 +107,63 @@ export default function GameDetailPage() {
                     </div>
                     <div className="col-md-8">
                         <div className="card-body">
-                            <h1 className="card-title">{videogameDetail.title}</h1>
+                            <h1 className="card-title">
+                                <i className="bi bi-controller me-2"></i>
+                                {videogameDetail.title}
+                            </h1>
                             <div className="d-flex gap-2 mb-3 flex-wrap">
-                                <span className="badge bg-primary">{videogameDetail.category}</span>
-                                <span className="badge bg-secondary">PEGI: {videogameDetail.pegi}</span>
-                                <span className="badge bg-info">{videogameDetail.year}</span>
+                                <span className="badge bg-primary">
+                                    <i className="bi bi-tag-fill me-1"></i>
+                                    {videogameDetail.category}
+                                </span>
+                                <span className="badge bg-secondary">
+                                    <i className="bi bi-shield-check me-1"></i>
+                                    PEGI: {videogameDetail.pegi}
+                                </span>
+                                <span className="badge bg-info">
+                                    <i className="bi bi-calendar-event me-1"></i>
+                                    {videogameDetail.year}
+                                </span>
                             </div>
 
                             <div className="mb-3">
-                                <h5>Dettagli</h5>
+                                <h5>
+                                    <i className="bi bi-info-circle me-2"></i>
+                                    Dettagli
+                                </h5>
                                 <ul className="list-group list-group-flush">
                                     <li className="list-group-item d-flex justify-content-between">
-                                        <span>Casa produttrice:</span>
+                                        <span>
+                                            <i className="bi bi-building me-2"></i>
+                                            Casa produttrice:
+                                        </span>
                                         <span className="fw-bold">{videogameDetail.company}</span>
                                     </li>
                                     <li className="list-group-item d-flex justify-content-between">
-                                        <span>Prezzo:</span>
+                                        <span>
+                                            <i className="bi bi-currency-euro me-2"></i>
+                                            Prezzo:
+                                        </span>
                                         <span className="fw-bold">{videogameDetail.price.toFixed(2)} €</span>
                                     </li>
                                     <li className="list-group-item d-flex justify-content-between">
-                                        <span>Multiplayer:</span>
-                                        <span className="fw-bold">{videogameDetail.multiplayer ? 'Sì' : 'No'}</span>
+                                        <span>
+                                            <i className="bi bi-people me-2"></i>
+                                            Multiplayer:
+                                        </span>
+                                        <span className="fw-bold">
+                                            {videogameDetail.multiplayer ? (
+                                                <><i className="bi bi-check-circle-fill text-success me-1"></i>Sì</>
+                                            ) : (
+                                                <><i className="bi bi-x-circle-fill text-danger me-1"></i>No</>
+                                            )}
+                                        </span>
                                     </li>
                                     <li className="list-group-item d-flex justify-content-between">
-                                        <span>Voto: {videogameDetail.vote}</span>
+                                        <span>
+                                            <i className="bi bi-star me-2"></i>
+                                            Voto: {videogameDetail.vote}
+                                        </span>
                                         <div>
                                             {Array.from({ length: Math.floor(videogameDetail.vote) }).map((_, i) => (
                                                 <i key={i} className="bi bi-star-fill text-warning"></i>
@@ -144,10 +177,16 @@ export default function GameDetailPage() {
                             </div>
 
                             <div className="mb-3">
-                                <h5>Piattaforme</h5>
+                                <h5>
+                                    <i className="bi bi-display me-2"></i>
+                                    Piattaforme
+                                </h5>
                                 <div className="d-flex gap-2 flex-wrap">
                                     {videogameDetail.platform.map((platform, index) => (
-                                        <span key={index} className="badge bg-success">{platform}</span>
+                                        <span key={index} className="badge bg-success">
+                                            <i className="bi bi-joystick me-1"></i>
+                                            {platform}
+                                        </span>
                                     ))}
                                 </div>
                             </div>
